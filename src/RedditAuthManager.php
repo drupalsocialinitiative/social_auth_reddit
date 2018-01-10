@@ -1,11 +1,14 @@
 <?php
+
 namespace Drupal\social_auth_reddit;
+
 use Drupal\social_auth\AuthManager\OAuth2Manager;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 /**
  * Contains all the logic for Reddit login integration.
  */
@@ -70,6 +73,7 @@ class RedditAuthManager extends OAuth2Manager {
    * @var array
    */
   protected $settings;
+
   /**
    * Constructor.
    *
@@ -91,6 +95,7 @@ class RedditAuthManager extends OAuth2Manager {
     $this->urlGenerator       = $url_generator;
     $this->config             = $configFactory->getEditable('social_auth_reddit.settings');
   }
+
   /**
    * Authenticates the users by using the access token.
    */
@@ -98,6 +103,7 @@ class RedditAuthManager extends OAuth2Manager {
     $this->token = $this->client->getAccessToken('authorization_code',
       ['code' => $_GET['code']]);
   }
+
   /**
    * Gets the data by using the access token returned.
    *
@@ -108,6 +114,7 @@ class RedditAuthManager extends OAuth2Manager {
     $this->user = $this->client->getResourceOwner($this->token);
     return $this->user;
   }
+
   /**
    * Gets the data by using the access token returned.
    *
@@ -125,6 +132,7 @@ class RedditAuthManager extends OAuth2Manager {
     }
     return FALSE;
   }
+
   /**
    * Returns token generated after authorization.
    *
@@ -134,6 +142,7 @@ class RedditAuthManager extends OAuth2Manager {
   public function getAccessToken() {
     return $this->token;
   }
+
   /**
    * Returns the Reddit login URL where user will be redirected.
    *
@@ -156,6 +165,7 @@ class RedditAuthManager extends OAuth2Manager {
     // Generate and return the URL where we should redirect the user.
     return $login_url;
   }
+
   /**
    * Returns the Reddit login URL where user will be redirected.
    *
@@ -167,6 +177,7 @@ class RedditAuthManager extends OAuth2Manager {
     // Generate and return the URL where we should redirect the user.
     return $state;
   }
+
   /**
    * Gets the data Point defined the settings form page.
    *
@@ -179,6 +190,7 @@ class RedditAuthManager extends OAuth2Manager {
     }
     return $this->scopes;
   }
+
   /**
    * Gets the API calls to collect data.
    *
@@ -188,4 +200,5 @@ class RedditAuthManager extends OAuth2Manager {
   public function getApiCalls() {
     return $this->config->get('api_calls');
   }
+
 }

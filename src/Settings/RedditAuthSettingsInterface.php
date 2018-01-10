@@ -1,9 +1,12 @@
 <?php
+
 namespace Drupal\social_auth_reddit\Settings;
+
 /**
  * Defines an interface for Social Auth Reddit settings.
  */
 interface RedditAuthSettingsInterface {
+
   /**
    * Gets the client ID.
    *
@@ -11,6 +14,7 @@ interface RedditAuthSettingsInterface {
    *   The client ID.
    */
   public function getClientId();
+
   /**
    * Gets the client secret.
    *
@@ -18,6 +22,7 @@ interface RedditAuthSettingsInterface {
    *   The client secret.
    */
   public function getClientSecret();
+
   /**
    * Gets the restricted domain.
    *
@@ -25,4 +30,5 @@ interface RedditAuthSettingsInterface {
    *   The restricted domain.
    */
   public function getRestrictedDomain();
+
 }

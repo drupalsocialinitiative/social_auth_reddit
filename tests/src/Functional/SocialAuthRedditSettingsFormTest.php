@@ -1,6 +1,9 @@
 <?php
+
 namespace Drupal\Tests\social_auth_reddit\Functional;
+
 use Drupal\social_api\SocialApiSettingsFormBaseTest;
+
 /**
  * Test Social Auth Reddit module functionality of settings' forms.
  *
@@ -15,6 +18,7 @@ class SocialAuthRedditSettingsFormTest extends SocialApiSettingsFormBaseTest {
    * @var array
    */
   public static $modules = ['social_auth_reddit'];
+
   /**
    * {@inheritdoc}
    */
@@ -24,6 +28,7 @@ class SocialAuthRedditSettingsFormTest extends SocialApiSettingsFormBaseTest {
     $this->moduleType = 'social-auth';
     parent::setUp();
   }
+
   /**
    * {@inheritdoc}
    */
@@ -31,6 +36,7 @@ class SocialAuthRedditSettingsFormTest extends SocialApiSettingsFormBaseTest {
     $this->fields = ['client_id', 'client_secret'];
     parent::testIsAvailableInIntegrationList();
   }
+
   /**
    * {@inheritdoc}
    */
@@ -41,4 +47,5 @@ class SocialAuthRedditSettingsFormTest extends SocialApiSettingsFormBaseTest {
     ];
     parent::testSettingsFormSubmission();
   }
+
 }

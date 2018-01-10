@@ -1,5 +1,7 @@
 <?php
+
 namespace Drupal\social_auth_reddit\Form;
+
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Path\PathValidatorInterface;
@@ -7,6 +9,7 @@ use Drupal\Core\Routing\RequestContext;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\social_auth\Form\SocialAuthSettingsForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Settings form for Social Auth Reddit.
  */
@@ -17,6 +20,7 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
    * @var \Drupal\Core\Routing\RequestContext
    */
   protected $requestContext;
+
   /**
    * Constructor.
    *
@@ -33,6 +37,7 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
     parent::__construct($config_factory, $route_provider, $path_validator);
     $this->requestContext = $request_context;
   }
+
   /**
    * {@inheritdoc}
    */
@@ -46,12 +51,14 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       $container->get('router.request_context')
     );
   }
+
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
     return 'social_auth_reddit_settings';
   }
+
   /**
    * {@inheritdoc}
    */
@@ -61,6 +68,7 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       ['social_auth_reddit.settings']
     );
   }
+
   /**
    * {@inheritdoc}
    */
@@ -126,6 +134,7 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
     ];
     return parent::buildForm($form, $form_state);
   }
+
   /**
    * {@inheritdoc}
    */
@@ -140,4 +149,5 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       ->save();
     parent::submitForm($form, $form_state);
   }
+
 }

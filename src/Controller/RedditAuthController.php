@@ -1,5 +1,7 @@
 <?php
+
 namespace Drupal\social_auth_reddit\Controller;
+
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\social_api\Plugin\NetworkManager;
 use Drupal\social_auth\SocialAuthDataHandler;
@@ -8,7 +10,7 @@ use Drupal\social_auth_reddit\RedditAuthManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+
 /**
  * Returns responses for Social Auth Reddit module routes.
  */
@@ -43,6 +45,7 @@ class RedditAuthController extends ControllerBase {
    * @var \Drupal\social_auth\SocialAuthDataHandler
    */
   private $dataHandler;
+
   /**
    * RedditAuthController constructor.
    *
@@ -72,6 +75,7 @@ class RedditAuthController extends ControllerBase {
     // Sets the session keys to nullify if user could not logged in.
     $this->userManager->setSessionKeysToNullify(['access_token', 'oauth2state']);
   }
+
   /**
    * {@inheritdoc}
    */
@@ -84,6 +88,7 @@ class RedditAuthController extends ControllerBase {
       $container->get('social_auth.data_handler')
     );
   }
+
   /**
    * Response for path 'user/login/reddit'.
    *
@@ -113,6 +118,7 @@ class RedditAuthController extends ControllerBase {
     $this->dataHandler->set('oauth2state', $state);
     return new TrustedRedirectResponse($reddit_login_url);
   }
+
   /**
    * Response for path 'user/login/reddit/callback'.
    *
@@ -162,4 +168,5 @@ class RedditAuthController extends ControllerBase {
     // If user information could be retrieved.
     return $this->userManager->authenticateUser($reddit_profile->getName(), $reddit_profile->getEmail(), $reddit_profile->getId(), $this->redditManager->getAccessToken(), $reddit_profile->getAvatar(), json_encode($data));
   }
+
 }

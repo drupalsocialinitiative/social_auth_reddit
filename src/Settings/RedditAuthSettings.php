@@ -1,6 +1,9 @@
 <?php
+
 namespace Drupal\social_auth_reddit\Settings;
+
 use Drupal\social_api\Settings\SettingsBase;
+
 /**
  * Defines methods to get Social Auth Reddit settings.
  */
@@ -23,6 +26,7 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
    * @var string
    */
   protected $restrictedDomain;
+
   /**
    * {@inheritdoc}
    */
@@ -32,6 +36,7 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
     }
     return $this->clientId;
   }
+
   /**
    * {@inheritdoc}
    */
@@ -41,6 +46,7 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
     }
     return $this->clientSecret;
   }
+
   /**
    * {@inheritdoc}
    */
@@ -50,4 +56,5 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
     }
     return $this->restrictedDomain;
   }
+
 }

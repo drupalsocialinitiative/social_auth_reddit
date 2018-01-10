@@ -1,5 +1,7 @@
 <?php
+
 namespace Drupal\social_auth_reddit\Plugin\Network;
+
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
@@ -11,6 +13,7 @@ use Drupal\social_auth_reddit\Settings\RedditAuthSettings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Rudolf\OAuth2\Client\Provider\Reddit;
 use Drupal\Core\Site\Settings;
+
 /**
  * Defines a Network Plugin for Social Auth Reddit.
  *
@@ -53,6 +56,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
    * @var \Drupal\Core\Site\Settings
    */
   protected $siteSettings;
+
   /**
    * {@inheritdoc}
    */
@@ -69,6 +73,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
       $container->get('settings')
     );
   }
+
   /**
    * RedditAuth constructor.
    *
@@ -107,6 +112,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
     $this->requestContext = $requestContext;
     $this->siteSettings = $settings;
   }
+
   /**
    * Sets the underlying SDK library.
    *
@@ -144,6 +150,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
     }
     return FALSE;
   }
+
   /**
    * Checks that module is configured.
    *
@@ -165,4 +172,5 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
     }
     return TRUE;
   }
+
 }
