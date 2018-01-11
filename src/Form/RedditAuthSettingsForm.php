@@ -113,12 +113,6 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#description' => $this->t('Copy this value to <em>Authorized Javascript Origins</em> field of your Reddit App settings.'),
       '#default_value' => $GLOBALS['base_url'],
     ];
-    $form['reddit_settings']['scopes'] = [
-      '#type' => 'textarea',
-      '#title' => $this->t('Scopes for API call'),
-      '#default_value' => $config->get('scopes'),
-      '#description' => $this->t('Define the requested scopes to make API calls.'),
-    ];
     $form['reddit_settings']['api_calls'] = [
       '#type' => 'textarea',
       '#title' => $this->t('API calls to be made to collect data'),
@@ -143,7 +137,6 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
     $this->config('social_auth_reddit.settings')
       ->set('client_id', trim($values['client_id']))
       ->set('client_secret', trim($values['client_secret']))
-      ->set('scopes', $values['scopes'])
       ->set('api_calls', $values['api_calls'])
       ->set('restricted_domain', $values['restricted_domain'])
       ->save();

@@ -131,22 +131,23 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
     $settings = $this->settings;
     if ($this->validateConfig($settings)) {
       // All these settings are mandatory.
-      $provider_settings = [
+      $league_settings = [
         'clientId' => $settings->getClientId(),
         'clientSecret' => $settings->getClientSecret(),
         'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/reddit/callback',
         'accessType' => 'offline',
         'verify' => FALSE,
         'hostedDomain' => $settings->getRestrictedDomain(),
+        'scope' => $this->Reddit->getDefaultScopes(),
       ];
       // Proxy configuration data for outward proxy.
       $proxyUrl = $this->siteSettings->get("http_client_config")["proxy"]["http"];
       if ($proxyUrl) {
-        $provider_settings = [
+        $league_settings = [
           'proxy' => $proxyUrl,
         ];
       }
-      return new Reddit($provider_settings);
+      return new Reddit($league_settings);
     }
     return FALSE;
   }
