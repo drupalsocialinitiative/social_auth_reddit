@@ -107,13 +107,6 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#description' => $this->t('Copy this value to <em>Authorized redirect URIs</em> field of your Reddit App settings.'),
       '#default_value' => $GLOBALS['base_url'] . '/user/login/reddit/callback',
     ];
-    $form['reddit_settings']['authorized_javascript_origin'] = [
-      '#type' => 'textfield',
-      '#disabled' => TRUE,
-      '#title' => $this->t('Authorized Javascript Origin'),
-      '#description' => $this->t('Copy this value to <em>Authorized Javascript Origins</em> field of your Reddit App settings.'),
-      '#default_value' => $GLOBALS['base_url'],
-    ];
     $form['reddit_settings']['scopes'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Scopes for API call'),
