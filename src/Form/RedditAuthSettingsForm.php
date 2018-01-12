@@ -20,6 +20,7 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
    * @var \Drupal\Core\Routing\RequestContext
    */
   protected $requestContext;
+ 
 
   /**
    * Constructor.
@@ -114,10 +115,10 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#default_value' => $GLOBALS['base_url'],
     ];
     $form['reddit_settings']['scopes'] = [
-      '#type' => 'textarea',
+      '#type' => 'textfield',
       '#title' => $this->t('Scopes for API call'),
       '#default_value' => $config->get('scopes'),
-      '#description' => $this->t('Define the requested scopes to make API calls.'),
+      '#description' => $this->t('Define the requested scopes to make API calls. A full list of valid scopes and their description is available in the <a href="https://www.drupal.org/node/2936211/">Social Auth Reddit guide</a>.'),
     ];
     $form['reddit_settings']['api_calls'] = [
       '#type' => 'textarea',
@@ -134,6 +135,28 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
     ];
     return parent::buildForm($form, $form_state);
   }
+    /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+
+    // Convert the string of space-separated scopes into an array.
+    $scopes = explode(" ", $form_state->getValue('scopes'));
+
+    // Define the list of valid scopes.
+    $valid_scopes = ['', 'creddits', 'modcontributors', 'modmail', 'modconfig', 'subscribe', 'structuredstyles', 'vote', 'wiki', 'mysubreddits', 'submit', 'modlog', 'modposts', 'modflair', 'save', 'modothers', 'read', 'privatemessages', 'report', 'identity', 'livemanage', 'account', 'modtraffic', 'wikiread', 'edit', 'modwiki', 'modself', 'history', 'flair'];
+
+    // Check if input contains any invalid scopes.
+    for ($i = 0; $i < count($scopes); $i++) {
+      if (!in_array($scopes[$i], $valid_scopes, TRUE)) {
+        $contains_invalid_scope = TRUE;
+      }
+    }
+    if (isset($contains_invalid_scope)) {
+      $form_state->setErrorByName('scope', t('You have entered an invalid scope. Please check and try again.'));
+    }
+  }
+
 
   /**
    * {@inheritdoc}

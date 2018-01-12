@@ -26,6 +26,12 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
    * @var string
    */
   protected $restrictedDomain;
+  /**
+   * The data point to be collected.
+   *
+   * @var string
+   */
+  protected $scopes;
 
   /**
    * {@inheritdoc}
@@ -56,5 +62,19 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
     }
     return $this->restrictedDomain;
   }
+
+  /**
+   * Gets the data Point defined the settings form page.
+   *
+   * @return string
+   *   Comma-separated scopes.
+   */
+  public function getScopes() {
+    if (!$this->scopes) {
+      $this->scopes = $this->config->get('scopes');
+    }
+    return $this->scopes;
+  }
+
 
 }

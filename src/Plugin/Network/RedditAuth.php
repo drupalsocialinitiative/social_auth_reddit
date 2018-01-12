@@ -193,17 +193,4 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
     return TRUE;
   }
 
-  /**
-   * Gets the data Point defined the settings form page.
-   *
-   * @return string
-   *   Comma-separated scopes.
-   */
-  public function getScopes() {
-    if (!$this->scopes) {
-      $this->scopes = $settings->get('scopes');
-    }
-    return $this->scopes;
-  }
-
 }
