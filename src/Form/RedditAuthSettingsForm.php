@@ -111,7 +111,7 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#type' => 'textfield',
       '#title' => $this->t('Scopes for API call'),
       '#default_value' => $config->get('scopes'),
-      '#description' => $this->t('Define the requested scopes to make API calls. A full list of valid scopes and their description is available in the <a href="https://www.drupal.org/node/2936210">Social Auth Reddit guide</a>.'),
+      '#description' => $this->t('Define additional requested scopes to make API calls. A full list of valid scopes and their description is available in the <a href="https://www.drupal.org/node/2936210">Social Auth Reddit guide</a>.'),
     ];
     $form['reddit_settings']['api_calls'] = [
       '#type' => 'textarea',
