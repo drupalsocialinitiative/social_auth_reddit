@@ -62,12 +62,6 @@ class RedditAuthManager extends OAuth2Manager {
    */
   protected $config;
   /**
-   * The data point to be collected.
-   *
-   * @var string
-   */
-  protected $scopes;
-  /**
    * Social Auth Reddit Settings.
    *
    * @var array
@@ -150,18 +144,8 @@ class RedditAuthManager extends OAuth2Manager {
    *   Absolute Reddit login URL where user will be redirected.
    */
   public function getRedditLoginUrl() {
-    $scopes = [
-      'email',
-      'openid',
-      'profile',
-    ];
-    $reddit_scopes = explode(PHP_EOL, $this->getScopes());
-    foreach ($reddit_scopes as $scope) {
-      array_push($scopes, $scope);
-    }
-    $login_url = $this->client->getAuthorizationUrl([
-      'scope' => $scopes,
-    ]);
+
+    $login_url = $this->client->getAuthorizationUrl();
     // Generate and return the URL where we should redirect the user.
     return $login_url;
   }
@@ -176,19 +160,6 @@ class RedditAuthManager extends OAuth2Manager {
     $state = $this->client->getState();
     // Generate and return the URL where we should redirect the user.
     return $state;
-  }
-
-  /**
-   * Gets the data Point defined the settings form page.
-   *
-   * @return string
-   *   Comma-separated scopes.
-   */
-  public function getScopes() {
-    if (!$this->scopes) {
-      $this->scopes = $this->config->get('scopes');
-    }
-    return $this->scopes;
   }
 
   /**

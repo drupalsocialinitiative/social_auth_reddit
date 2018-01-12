@@ -56,6 +56,12 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
    * @var \Drupal\Core\Site\Settings
    */
   protected $siteSettings;
+  /**
+   * The data point to be collected.
+   *
+   * @var string
+   */
+  protected $scopes;
 
   /**
    * {@inheritdoc}
@@ -125,7 +131,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
   protected function initSdk() {
     $class_name = '\Rudolf\OAuth2\Client\Provider\Reddit';
     if (!class_exists($class_name)) {
-      throw new SocialApiException(sprintf('The Reddit Library for the rudolf oAuth not found. Class: %s.', $class_name));
+      throw new SocialApiException(sprintf('The Reddit Library for the League OAuth not found. Class: %s.', $class_name));
     }
     /* @var \Drupal\social_auth_reddit\Settings\RedditAuthSettings $settings */
     $settings = $this->settings;
@@ -139,6 +145,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
         'verify' => FALSE,
         'hostedDomain' => $settings->getRestrictedDomain(),
       ];
+
       // Proxy configuration data for outward proxy.
       $proxyUrl = $this->siteSettings->get("http_client_config")["proxy"]["http"];
       if ($proxyUrl) {
@@ -146,6 +153,19 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
           'proxy' => $proxyUrl,
         ];
       }
+
+      // Add default scopes.
+      $scopes = [
+        'identity',
+        'read',
+      ];
+      //  If user has requested additional scopes, add them as well.
+      $reddit_scopes = explode(PHP_EOL, $settings->getScopes());
+      foreach ($reddit_scopes as $scope) {
+        array_push($scopes, $scope);
+      }
+      $provider_settings['scopes'] = $scopes;
+
       return new Reddit($provider_settings);
     }
     return FALSE;
@@ -171,6 +191,19 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
       return FALSE;
     }
     return TRUE;
+  }
+
+  /**
+   * Gets the data Point defined the settings form page.
+   *
+   * @return string
+   *   Comma-separated scopes.
+   */
+  public function getScopes() {
+    if (!$this->scopes) {
+      $this->scopes = $settings->get('scopes');
+    }
+    return $this->scopes;
   }
 
 }
