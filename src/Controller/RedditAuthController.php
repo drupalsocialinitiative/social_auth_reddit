@@ -157,7 +157,9 @@ class RedditAuthController extends ControllerBase {
     // Store the data mapped with data points define is
     // social_auth_reddit settings.
     $data = [];
-    if (!$this->userManager->checkIfUserExists($reddit_profile->getId())) {
+    $e = new \Exception;
+    var_dump($e->getTraceAsString());
+    if (!$this->userManager->checkIfUserExists($reddit_profile['id'])) {
       $api_calls = explode(PHP_EOL, $this->redditManager->getApiCalls());
       // Iterate through api calls define in settings and try to retrieve them.
       foreach ($api_calls as $api_call) {
@@ -166,7 +168,7 @@ class RedditAuthController extends ControllerBase {
       }
     }
     // If user information could be retrieved.
-    return $this->userManager->authenticateUser($reddit_profile->getName(), $reddit_profile->getEmail(), $reddit_profile->getId(), $this->redditManager->getAccessToken(), $reddit_profile->getAvatar(), json_encode($data));
+    return $this->userManager->authenticateUser($reddit_profile['name'], $reddit_profile['name'], $reddit_profile['id'], $this->redditManager->getAccessToken(), $reddit_profile['icon_img'], json_encode($data));
   }
 
 }
