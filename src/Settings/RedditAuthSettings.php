@@ -32,6 +32,12 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
    * @var string
    */
   protected $scopes;
+  /**
+   * User Agent string.
+   *
+   * @var string
+   */
+  protected $user_agent_string;
 
   /**
    * {@inheritdoc}
@@ -74,6 +80,19 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
       $this->scopes = $this->config->get('scopes');
     }
     return $this->scopes;
+  }
+
+  /**
+   * Gets the User Agent string input in settings form page.
+   *
+   * @return string
+   *   User agent string.
+   */
+  public function getUserAgentString() {
+    if (!$this->user_agent_string) {
+      $this->user_agent_string = $this->config->get('user_agent_string');
+    }
+    return $this->user_agent_string;
   }
 
 

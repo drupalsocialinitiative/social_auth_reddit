@@ -16,4 +16,7 @@ social_auth_reddit.settings:
       label: 'API calls which will retrieve data'
     restricted_domain:
       type: string
-label: 'Restricted Domain'
+      label: 'Restricted Domain'
+    user_agent_string:
+      type: string
+      label: "User Agent string"
