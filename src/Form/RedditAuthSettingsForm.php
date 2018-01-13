@@ -125,13 +125,6 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#default_value' => $config->get('user_agent_string'),
       '#description' => $this->t("Enter the user agent string to be used. The format is <code> drupal:social_auth_reddit:{app_version} (by /u/{user})</code> , where you need to replace {app_version} and {user} by your Reddit App version and the app creator's Reddit username respectively. "),
     ];
-    $form['domain_settings']['restricted_domain'] = [
-      '#type' => 'textfield',
-      '#required' => FALSE,
-      '#title' => $this->t('Restricted Domain'),
-      '#default_value' => $config->get('restricted_domain'),
-      '#description' => $this->t('If you want to restrict the users to a specific domain, insert your domain here. For example mycollege.edu. Note that this works only for Reddit Apps hosted accounts. Leave this blank if you are not sure what this is.'),
-    ];
     return parent::buildForm($form, $form_state);
   }
     /**
@@ -168,7 +161,6 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       ->set('scopes', $values['scopes'])
       ->set('api_calls', $values['api_calls'])
       ->set('user_agent_string', $values['user_agent_string'])
-      ->set('restricted_domain', $values['restricted_domain'])
       ->save();
     parent::submitForm($form, $form_state);
   }

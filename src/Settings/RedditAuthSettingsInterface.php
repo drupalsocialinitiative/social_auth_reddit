@@ -23,12 +23,4 @@ interface RedditAuthSettingsInterface {
    */
   public function getClientSecret();
 
-  /**
-   * Gets the restricted domain.
-   *
-   * @return string
-   *   The restricted domain.
-   */
-  public function getRestrictedDomain();
-
 }

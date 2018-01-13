@@ -21,12 +21,6 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
    */
   protected $clientSecret;
   /**
-   * Restricted domain.
-   *
-   * @var string
-   */
-  protected $restrictedDomain;
-  /**
    * The data point to be collected.
    *
    * @var string
@@ -57,16 +51,6 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
       $this->clientSecret = $this->config->get('client_secret');
     }
     return $this->clientSecret;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRestrictedDomain() {
-    if (!$this->restrictedDomain) {
-      $this->restrictedDomain = $this->config->get('restricted_domain');
-    }
-    return $this->restrictedDomain;
   }
 
   /**
