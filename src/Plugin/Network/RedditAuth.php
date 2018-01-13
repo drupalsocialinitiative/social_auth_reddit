@@ -144,6 +144,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
         'accessType' => 'offline',
         'verify' => FALSE,
         'hostedDomain' => $settings->getRestrictedDomain(),
+        'userAgent' => $settings->getUserAgentString(),
       ];
 
       // Proxy configuration data for outward proxy.
