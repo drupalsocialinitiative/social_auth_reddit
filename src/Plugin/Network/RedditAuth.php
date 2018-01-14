@@ -143,7 +143,6 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
         'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/reddit/callback',
         'accessType' => 'offline',
         'verify' => FALSE,
-        'hostedDomain' => $settings->getRestrictedDomain(),
         'userAgent' => $settings->getUserAgentString(),
       ];
 

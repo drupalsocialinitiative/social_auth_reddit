@@ -81,11 +81,6 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#open' => TRUE,
       '#description' => $this->t('You need to first create a Reddit App at <a href="@reddit-dev">@reddit-dev</a> by clicking "are you a developer? create an app..."', ['@reddit-dev' => 'https://www.reddit.com/prefs/apps']),
     ];
-    $form['domain_settings'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Domain settings'),
-      '#open' => FALSE,
-    ];
     $form['reddit_settings']['client_id'] = [
       '#type' => 'textfield',
       '#required' => TRUE,
