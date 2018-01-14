@@ -175,7 +175,7 @@ class RedditAuthController extends ControllerBase {
     }
 
     // If user information could be retrieved.
-    return $this->userManager->authenticateUser($reddit_profile['name'], $reddit_profile['name'], $reddit_profile['id'], $this->redditManager->getAccessToken(), $reddit_profile['icon_img'], json_encode($data));
+    return $this->userManager->authenticateUser($reddit_profile['name'], '', $reddit_profile['id'], $this->redditManager->getAccessToken(), $reddit_profile['icon_img'], json_encode($data));
   }
 
 }
