@@ -41,7 +41,7 @@ INSTALLATION
    for further information.
 
  * A more comprehensive installation instruction for Drupal 8 can be found at
-   https://www.drupal.org/node/2936210
+   https://www.drupal.org/node/2935597
 
 CONFIGURATION
 -------------
