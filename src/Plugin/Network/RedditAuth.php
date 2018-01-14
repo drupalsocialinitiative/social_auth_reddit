@@ -6,7 +6,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Routing\RequestContext;
-use Drupal\social_auth\SocialAuthDataHandler;
 use Drupal\social_api\Plugin\NetworkBase;
 use Drupal\social_api\SocialApiException;
 use Drupal\social_auth_reddit\Settings\RedditAuthSettings;
@@ -32,12 +31,6 @@ use Drupal\Core\Site\Settings;
  * )
  */
 class RedditAuth extends NetworkBase implements RedditAuthInterface {
-  /**
-   * The Social Auth Data Handler.
-   *
-   * @var \Drupal\social_auth\SocialAuthDataHandler
-   */
-  protected $dataHandler;
   /**
    * The logger factory.
    *
@@ -68,7 +61,6 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $container->get('social_auth.data_handler'),
       $configuration,
       $plugin_id,
       $plugin_definition,
@@ -83,8 +75,6 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
   /**
    * RedditAuth constructor.
    *
-   * @param \Drupal\social_auth\SocialAuthDataHandler $data_handler
-   *   The data handler.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
    * @param string $plugin_id
@@ -102,8 +92,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
    * @param \Drupal\Core\Site\Settings $settings
    *   The settings factory.
    */
-  public function __construct(SocialAuthDataHandler $data_handler,
-                              array $configuration,
+  public function __construct(array $configuration,
                               $plugin_id,
                               array $plugin_definition,
                               EntityTypeManagerInterface $entity_type_manager,
@@ -113,7 +102,6 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
                               Settings $settings
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $config_factory);
-    $this->dataHandler = $data_handler;
     $this->loggerFactory = $logger_factory;
     $this->requestContext = $requestContext;
     $this->siteSettings = $settings;
