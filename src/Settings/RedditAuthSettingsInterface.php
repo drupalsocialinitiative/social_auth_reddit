@@ -23,4 +23,19 @@ interface RedditAuthSettingsInterface {
    */
   public function getClientSecret();
 
+  /**
+   * Gets the data Point defined the settings form page.
+   *
+   * @return string
+   *   Comma-separated scopes.
+   */
+  public function getScopes();
+
+  /**
+   * Gets the User Agent string input in settings form page.
+   *
+   * @return string
+   *   User agent string.
+   */
+  public function getUserAgentString();
 }

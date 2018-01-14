@@ -54,10 +54,7 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
   }
 
   /**
-   * Gets the data Point defined the settings form page.
-   *
-   * @return string
-   *   Comma-separated scopes.
+   * {@inheritdoc}
    */
   public function getScopes() {
     if (!$this->scopes) {
@@ -67,10 +64,7 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
   }
 
   /**
-   * Gets the User Agent string input in settings form page.
-   *
-   * @return string
-   *   User agent string.
+   * {@inheritdoc}
    */
   public function getUserAgentString() {
     if (!$this->userAgentString) {

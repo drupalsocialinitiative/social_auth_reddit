@@ -97,19 +97,23 @@ class RedditAuthController extends ControllerBase {
   public function redirectToReddit() {
     /* @var \Rudolf\OAuth2\Client\Provider\Reddit false $reddit */
     $reddit = $this->networkManager->createInstance('social_auth_reddit')->getSdk();
+
     // If reddit client could not be obtained.
     if (!$reddit) {
       drupal_set_message($this->t('Social Auth Reddit not configured properly. Contact site administrator.'), 'error');
       return $this->redirect('user.login');
     }
+
     // Destination parameter specified in url.
     $destination = $this->request->getCurrentRequest()->get('destination');
     // If destination parameter is set, save it.
     if ($destination) {
       $this->userManager->setDestination($destination);
     }
+
     // Reddit service was returned, inject it to $redditManager.
     $this->redditManager->setClient($reddit);
+
     // Generates the URL where the user will be redirected for Reddit login.
     // If the user did not have email permission granted on previous attempt,
     // we use the re-request URL requesting only the email address.
@@ -131,6 +135,7 @@ class RedditAuthController extends ControllerBase {
       drupal_set_message($this->t('You could not be authenticated.'), 'error');
       return $this->redirect('user.login');
     }
+
     /* @var \Rudolf\OAuth2\Client\Provider\Reddit|false $reddit */
     $reddit = $this->networkManager->createInstance('social_auth_reddit')->getSdk();
     // If Reddit client could not be obtained.
@@ -139,6 +144,7 @@ class RedditAuthController extends ControllerBase {
       return $this->redirect('user.login');
     }
     $state = $this->dataHandler->get('oauth2state');
+
     // Retrieves $_GET['state'].
     $retrievedState = $this->request->getCurrentRequest()->query->get('state');
     if (empty($retrievedState) || ($retrievedState !== $state)) {
@@ -146,6 +152,7 @@ class RedditAuthController extends ControllerBase {
       drupal_set_message($this->t('Reddit login failed. Unvalid OAuth2 state.'), 'error');
       return $this->redirect('user.login');
     }
+
     // Saves access token to session.
     $this->dataHandler->set('access_token', $this->redditManager->getAccessToken());
     $this->redditManager->setClient($reddit)->authenticate();
@@ -154,6 +161,7 @@ class RedditAuthController extends ControllerBase {
       drupal_set_message($this->t('Reddit login failed, could not load Reddit profile. Contact site administrator.'), 'error');
       return $this->redirect('user.login');
     }
+
     // Store the data mapped with data points define is
     // social_auth_reddit settings.
     $data = [];
@@ -165,6 +173,7 @@ class RedditAuthController extends ControllerBase {
         array_push($data, $call);
       }
     }
+
     // If user information could be retrieved.
     return $this->userManager->authenticateUser($reddit_profile['name'], $reddit_profile['name'], $reddit_profile['id'], $this->redditManager->getAccessToken(), $reddit_profile['icon_img'], json_encode($data));
   }

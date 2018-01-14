@@ -147,11 +147,13 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
         'identity',
         'read',
       ];
+
       // If user has requested additional scopes, add them as well.
       $reddit_scopes = explode(PHP_EOL, $settings->getScopes());
       foreach ($reddit_scopes as $scope) {
         array_push($scopes, $scope);
       }
+
       $provider_settings['scopes'] = $scopes;
 
       return new Reddit($provider_settings);
