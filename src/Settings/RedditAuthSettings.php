@@ -73,10 +73,10 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
    *   User agent string.
    */
   public function getUserAgentString() {
-    if (!$this->user_agent_string) {
-      $this->user_agent_string = $this->config->get('user_agent_string');
+    if (!$this->userAgentString) {
+      $this->userAgentString = $this->config->get('user_agent_string');
     }
-    return $this->user_agent_string;
+    return $this->userAgentString;
   }
 
 }
