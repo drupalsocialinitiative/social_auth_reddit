@@ -157,8 +157,6 @@ class RedditAuthController extends ControllerBase {
     // Store the data mapped with data points define is
     // social_auth_reddit settings.
     $data = [];
-    $e = new \Exception;
-    var_dump($e->getTraceAsString());
     if (!$this->userManager->checkIfUserExists($reddit_profile['id'])) {
       $api_calls = explode(PHP_EOL, $this->redditManager->getApiCalls());
       // Iterate through api calls define in settings and try to retrieve them.

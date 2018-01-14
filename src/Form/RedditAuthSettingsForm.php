@@ -20,7 +20,6 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
    * @var \Drupal\Core\Routing\RequestContext
    */
   protected $requestContext;
- 
 
   /**
    * Constructor.
@@ -118,11 +117,12 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#type' => 'textfield',
       '#title' => $this->t('User Agent String'),
       '#default_value' => $config->get('user_agent_string'),
-      '#description' => $this->t("Enter the user agent string to be used. The format is <code> drupal:social_auth_reddit:{app_version} (by /u/{user})</code> , where you need to replace {app_version} and {user} by your Reddit App version and the app creator's Reddit username respectively. "),
+      '#description' => $this->t("Enter the user agent string to be used. The format is <code> drupal:social_auth_reddit:{app_version} (by /u/{user})</code> , where you need to replace {app_version} and {user} by your Reddit App version and the app creator's Reddit username respectively."),
     ];
     return parent::buildForm($form, $form_state);
   }
-    /**
+
+  /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
@@ -143,7 +143,6 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       $form_state->setErrorByName('scope', t('You have entered an invalid scope. Please check and try again.'));
     }
   }
-
 
   /**
    * {@inheritdoc}

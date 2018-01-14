@@ -31,7 +31,7 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
    *
    * @var string
    */
-  protected $user_agent_string;
+  protected $userAgentString;
 
   /**
    * {@inheritdoc}
@@ -78,6 +78,5 @@ class RedditAuthSettings extends SettingsBase implements RedditAuthSettingsInter
     }
     return $this->user_agent_string;
   }
-
 
 }
