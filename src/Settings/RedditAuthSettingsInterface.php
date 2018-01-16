@@ -38,4 +38,5 @@ interface RedditAuthSettingsInterface {
    *   User agent string.
    */
   public function getUserAgentString();
+
 }
