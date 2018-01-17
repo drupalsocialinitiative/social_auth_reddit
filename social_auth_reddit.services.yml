@@ -2,8 +2,4 @@ services:
   social_auth_reddit.manager:
     class: Drupal\social_auth_reddit\RedditAuthManager
     arguments:
-      - '@logger.factory'
-      - '@event_dispatcher'
-      - '@entity_field.manager'
-      - '@url_generator.non_bubbling'
       - '@config.factory'

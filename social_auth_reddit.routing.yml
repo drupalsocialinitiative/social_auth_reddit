@@ -11,6 +11,8 @@ social_auth_reddit.redirect_to_reddit:
   defaults:
     _controller: 'Drupal\social_auth_reddit\Controller\RedditAuthController::redirectToReddit'
   requirements:
+    # Anonymous users can log in, but authenticated users can also associate a
+    # new provider.
     _access: 'TRUE'
   options:
     no_cache: TRUE
@@ -20,6 +22,8 @@ social_auth_reddit.callback:
   defaults:
     _controller: 'Drupal\social_auth_reddit\Controller\RedditAuthController::callback'
   requirements:
+    # Anonymous users can log in, but authenticated users can also associate a
+    # new provider.
     _access: 'TRUE'
   options:
     no_cache: TRUE

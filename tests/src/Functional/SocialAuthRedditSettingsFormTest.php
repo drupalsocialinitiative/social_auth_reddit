@@ -5,7 +5,7 @@ namespace Drupal\Tests\social_auth_reddit\Functional;
 use Drupal\social_api\SocialApiSettingsFormBaseTest;
 
 /**
- * Test Social Auth Reddit module functionality of settings' forms.
+ * Test Social Auth Reddit settings form functionality.
  *
  * @group social_auth
  *
