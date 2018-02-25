@@ -11,42 +11,17 @@ use Drupal\Core\Config\ConfigFactory;
 class RedditAuthManager extends OAuth2Manager {
 
   /**
-   * The Reddit client object.
-   *
-   * @var \Rudolf\OAuth2\Client\Provider\Reddit
-   */
-  protected $client;
-  /**
-   * The Reddit user.
-   *
-   * @var \Rudolf\OAuth2\Client\Grant\InstalledClient
-   */
-  protected $user;
-  /**
-   * The config factory object.
-   *
-   * @var \Drupal\Core\Config\ConfigFactory
-   */
-  protected $config;
-  /**
-   * Social Auth Reddit Settings.
-   *
-   * @var array
-   */
-  protected $settings;
-
-  /**
    * Constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactory $configFactory
    *   Used for accessing configuration object factory.
    */
   public function __construct(ConfigFactory $configFactory) {
-    $this->settings = $configFactory->getEditable('social_auth_reddit.settings');
+    parent::__construct($configFactory->get('social_auth_reddit.settings'));
   }
 
   /**
-   * Authenticates the users by using the access token.
+   * {@inheritdoc}
    */
   public function authenticate() {
     $this->setAccessToken($this->client->getAccessToken('authorization_code',
@@ -54,10 +29,7 @@ class RedditAuthManager extends OAuth2Manager {
   }
 
   /**
-   * Gets the data by using the access token returned.
-   *
-   * @return \Rudolf\OAuth2\Client\Grant\InstalledClient
-   *   User info returned by the Reddit.
+   * {@inheritdoc}
    */
   public function getUserInfo() {
     $this->user = $this->client->getResourceOwner($this->getAccessToken());
@@ -65,56 +37,39 @@ class RedditAuthManager extends OAuth2Manager {
   }
 
   /**
-   * Gets the data by using the access token returned.
-   *
-   * @param string $url
-   *   The API call url.
-   *
-   * @return string
-   *   Data returned by API call.
+   * {@inheritdoc}
    */
-  public function getExtraDetails($url) {
-    if ($url) {
-      $httpRequest = $this->client->getAuthenticatedRequest('GET', $url, $this->getAccessToken(), []);
-      $data = $this->client->getResponse($httpRequest);
-      return json_decode($data->getBody(), TRUE);
+  public function getAuthorizationUrl() {
+    $scopes = ['identity', 'read'];
+
+    $extra_scopes = $this->getScopes();
+    if ($extra_scopes) {
+      if (strpos($extra_scopes, ',')) {
+        $scopes = array_merge($scopes, explode(',', $extra_scopes));
+      }
+      else {
+        $scopes[] = $extra_scopes;
+      }
     }
-    return FALSE;
+
+    // Returns the URL where user will be redirected.
+    return $this->client->getAuthorizationUrl([
+      'scope' => $scopes,
+    ]);
   }
 
   /**
-   * Returns the Reddit login URL where user will be redirected.
-   *
-   * @return string
-   *   Absolute Reddit login URL where user will be redirected.
+   * {@inheritdoc}
    */
-  public function getRedditLoginUrl() {
+  public function requestEndPoint($path) {
 
-    $login_url = $this->client->getAuthorizationUrl();
-    // Generate and return the URL where we should redirect the user.
-    return $login_url;
   }
 
   /**
-   * Returns the Reddit login URL where user will be redirected.
-   *
-   * @return string
-   *   Absolute Reddit login URL where user will be redirected
+   * {@inheritdoc}
    */
   public function getState() {
-    $state = $this->client->getState();
-    // Generate and return the URL where we should redirect the user.
-    return $state;
-  }
-
-  /**
-   * Gets the API calls to collect data.
-   *
-   * @return string
-   *   Comma-separated API calls.
-   */
-  public function getApiCalls() {
-    return $this->settings->get('api_calls');
+    return $this->client->getState();
   }
 
 }
