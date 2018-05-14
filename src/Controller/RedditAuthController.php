@@ -116,7 +116,7 @@ class RedditAuthController extends ControllerBase {
     // Reddit service was returned, inject it to $redditManager.
     $this->redditManager->setClient($reddit);
 
-    // Generates the URL where the user will be redirected for Reddit login.
+    // Generates the URL where the user will be redirected for authentication.
     $reddit_login_url = $this->redditManager->getAuthorizationUrl();
 
     $state = $this->redditManager->getState();
@@ -157,9 +157,10 @@ class RedditAuthController extends ControllerBase {
       return $this->redirect('user.login');
     }
 
+    $this->redditManager->setClient($reddit)->authenticate();
+
     // Saves access token to session.
     $this->dataHandler->set('access_token', $this->redditManager->getAccessToken());
-    $this->redditManager->setClient($reddit)->authenticate();
 
     // Gets user's info from Reddit API.
     if (!$profile = $this->redditManager->getUserInfo()) {
