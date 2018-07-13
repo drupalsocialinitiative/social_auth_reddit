@@ -9,7 +9,7 @@ social_auth_reddit.settings_form:
 social_auth_reddit.redirect_to_reddit:
   path: 'user/login/reddit'
   defaults:
-    _controller: 'Drupal\social_auth_reddit\Controller\RedditAuthController::redirectToReddit'
+    _controller: 'Drupal\social_auth_reddit\Controller\RedditAuthController::redirectToProvider'
   requirements:
     # Anonymous users can log in, but authenticated users can also associate a new provider.
     _access: 'TRUE'

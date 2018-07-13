@@ -2,53 +2,25 @@
 
 namespace Drupal\social_auth_reddit\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\social_api\Plugin\NetworkManager;
+use Drupal\social_auth\Controller\SocialAuthOAuth2ControllerBase;
 use Drupal\social_auth\SocialAuthDataHandler;
 use Drupal\social_auth\SocialAuthUserManager;
 use Drupal\social_auth_reddit\RedditAuthManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Routing\TrustedRedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Returns responses for Social Auth Reddit module routes.
+ * Returns responses for Social Auth Reddit routes.
  */
-class RedditAuthController extends ControllerBase {
-  /**
-   * The network plugin manager.
-   *
-   * @var \Drupal\social_api\Plugin\NetworkManager
-   */
-  private $networkManager;
-  /**
-   * The user manager.
-   *
-   * @var \Drupal\social_auth\SocialAuthUserManager
-   */
-  private $userManager;
-  /**
-   * The reddit authentication manager.
-   *
-   * @var \Drupal\social_auth_reddit\RedditAuthManager
-   */
-  private $redditManager;
-  /**
-   * Used to access GET parameters.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  private $request;
-  /**
-   * The Social Auth Data Handler.
-   *
-   * @var \Drupal\social_auth\SocialAuthDataHandler
-   */
-  private $dataHandler;
+class RedditAuthController extends SocialAuthOAuth2ControllerBase {
 
   /**
    * RedditAuthController constructor.
    *
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
    * @param \Drupal\social_api\Plugin\NetworkManager $network_manager
    *   Used to get an instance of social_auth_reddit network plugin.
    * @param \Drupal\social_auth\SocialAuthUserManager $user_manager
@@ -60,22 +32,14 @@ class RedditAuthController extends ControllerBase {
    * @param \Drupal\social_auth\SocialAuthDataHandler $data_handler
    *   SocialAuthDataHandler object.
    */
-  public function __construct(NetworkManager $network_manager,
+  public function __construct(MessengerInterface $messenger,
+                              NetworkManager $network_manager,
                               SocialAuthUserManager $user_manager,
                               RedditAuthManager $reddit_manager,
                               RequestStack $request,
                               SocialAuthDataHandler $data_handler) {
-    $this->networkManager = $network_manager;
-    $this->userManager = $user_manager;
-    $this->redditManager = $reddit_manager;
-    $this->request = $request;
-    $this->dataHandler = $data_handler;
 
-    // Sets the plugin id.
-    $this->userManager->setPluginId('social_auth_reddit');
-
-    // Sets the session keys to nullify if user could not logged in.
-    $this->userManager->setSessionKeysToNullify(['access_token', 'oauth2state']);
+    parent::__construct('Social Auth Reddit', 'social_auth_reddit', $messenger, $network_manager, $user_manager, $reddit_manager, $request, $data_handler);
   }
 
   /**
@@ -83,6 +47,7 @@ class RedditAuthController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('messenger'),
       $container->get('plugin.network.manager'),
       $container->get('social_auth.user_manager'),
       $container->get('social_auth_reddit.manager'),
@@ -92,87 +57,32 @@ class RedditAuthController extends ControllerBase {
   }
 
   /**
-   * Response for path 'user/login/reddit'.
-   *
-   * Redirects the user to Reddit for authentication.
-   */
-  public function redirectToReddit() {
-    /* @var \Rudolf\OAuth2\Client\Provider\Reddit false $reddit */
-    $reddit = $this->networkManager->createInstance('social_auth_reddit')->getSdk();
-
-    // If reddit client could not be obtained.
-    if (!$reddit) {
-      drupal_set_message($this->t('Social Auth Reddit not configured properly. Contact site administrator.'), 'error');
-      return $this->redirect('user.login');
-    }
-
-    // Destination parameter specified in url.
-    $destination = $this->request->getCurrentRequest()->get('destination');
-    // If destination parameter is set, save it.
-    if ($destination) {
-      $this->userManager->setDestination($destination);
-    }
-
-    // Reddit service was returned, inject it to $redditManager.
-    $this->redditManager->setClient($reddit);
-
-    // Generates the URL where the user will be redirected for authentication.
-    $reddit_login_url = $this->redditManager->getAuthorizationUrl();
-
-    $state = $this->redditManager->getState();
-    $this->dataHandler->set('oauth2state', $state);
-
-    return new TrustedRedirectResponse($reddit_login_url);
-  }
-
-  /**
    * Response for path 'user/login/reddit/callback'.
    *
-   * Reddit returns the user here after user has authenticated in Reddit.
+   * Reddit returns the user here after user has authenticated.
    */
   public function callback() {
-    // Checks if user cancel login via Reddit.
-    $error = $this->request->getCurrentRequest()->get('error');
-    if ($error == 'access_denied') {
-      drupal_set_message($this->t('You could not be authenticated.'), 'error');
+    // Checks if authentication failed.
+    if ($this->request->getCurrentRequest()->query->has('error')) {
+      $this->messenger->addError('You could not be authenticated.');
+
       return $this->redirect('user.login');
     }
 
-    /* @var \Rudolf\OAuth2\Client\Provider\Reddit|false $reddit */
-    $reddit = $this->networkManager->createInstance('social_auth_reddit')->getSdk();
+    /* @var array|null $profile */
+    $profile = $this->processCallback();
 
-    // If Reddit client could not be obtained.
-    if (!$reddit) {
-      drupal_set_message($this->t('Social Auth Reddit not configured properly. Contact site administrator.'), 'error');
-      return $this->redirect('user.login');
+    // If authentication was successful.
+    if ($profile !== NULL) {
+
+      // Gets (or not) extra initial data.
+      $data = $this->userManager->checkIfUserExists($profile['id']) ? NULL : $this->providerManager->getExtraDetails();
+
+      // If user information could be retrieved.
+      return $this->userManager->authenticateUser($profile['name'], '', $profile['id'], $this->providerManager->getAccessToken(), $profile['icon_img'], $data);
     }
 
-    $state = $this->dataHandler->get('oauth2state');
-
-    // Retrieves $_GET['state'].
-    $retrievedState = $this->request->getCurrentRequest()->query->get('state');
-    if (empty($retrievedState) || ($retrievedState !== $state)) {
-      $this->userManager->nullifySessionKeys();
-      drupal_set_message($this->t('Reddit login failed. Unvalid OAuth2 state.'), 'error');
-      return $this->redirect('user.login');
-    }
-
-    $this->redditManager->setClient($reddit)->authenticate();
-
-    // Saves access token to session.
-    $this->dataHandler->set('access_token', $this->redditManager->getAccessToken());
-
-    // Gets user's info from Reddit API.
-    if (!$profile = $this->redditManager->getUserInfo()) {
-      drupal_set_message($this->t('Reddit login failed, could not load Reddit profile. Contact site administrator.'), 'error');
-      return $this->redirect('user.login');
-    }
-
-    // Gets (or not) extra initial data.
-    $data = $this->userManager->checkIfUserExists($profile['id']) ? NULL : $this->redditManager->getExtraDetails();
-
-    // If user information could be retrieved.
-    return $this->userManager->authenticateUser($profile['name'], '', $profile['id'], $this->redditManager->getAccessToken(), $profile['icon_img'], $data);
+    return $this->redirect('user.login');
   }
 
 }

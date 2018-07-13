@@ -98,19 +98,20 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#description' => $this->t('Copy the Client Secret here.'),
     ];
 
+    $form['reddit_settings']['user_agent_string'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('User Agent String'),
+      '#default_value' => $config->get('user_agent_string'),
+      '#required' => TRUE,
+      '#description' => $this->t("Enter the user agent string to be used. The format is <code>platform:appid:version, (by /u/username)</code> , where you need to replace {app_version} and {user} by your Reddit App version and the app creator's Reddit username respectively."),
+    ];
+
     $form['reddit_settings']['authorized_redirect_url'] = [
       '#type' => 'textfield',
       '#disabled' => TRUE,
       '#title' => $this->t('Authorized redirect URIs'),
       '#description' => $this->t('Copy this value to <em>Authorized redirect URIs</em> field of your Reddit App settings.'),
       '#default_value' => $GLOBALS['base_url'] . '/user/login/reddit/callback',
-    ];
-
-    $form['reddit_settings']['user_agent_string'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('User Agent String'),
-      '#default_value' => $config->get('user_agent_string'),
-      '#description' => $this->t("Enter the user agent string to be used. The format is <code> drupal:social_auth_reddit:{app_version} (by /u/{user})</code> , where you need to replace {app_version} and {user} by your Reddit App version and the app creator's Reddit username respectively."),
     ];
 
     $form['reddit_settings']['advanced'] = [
