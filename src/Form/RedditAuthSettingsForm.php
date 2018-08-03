@@ -103,7 +103,7 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#title' => $this->t('User Agent String'),
       '#default_value' => $config->get('user_agent_string'),
       '#required' => TRUE,
-      '#description' => $this->t("Enter the user agent string to be used. The format is <code>platform:appid:version, (by /u/username)</code> , where you need to replace {app_version} and {user} by your Reddit App version and the app creator's Reddit username respectively."),
+      '#description' => $this->t("Enter the user agent string to be used. The format is <em>platform:appid:version (by /u/username)</em>."),
     ];
 
     $form['reddit_settings']['authorized_redirect_url'] = [
