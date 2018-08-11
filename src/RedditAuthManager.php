@@ -62,7 +62,10 @@ class RedditAuthManager extends OAuth2Manager {
    * {@inheritdoc}
    */
   public function requestEndPoint($path) {
+    $url = 'https://oauth.reddit.com' . $path;
+    $request = $this->client->getAuthenticatedRequest('GET', $url, $this->getAccessToken());
 
+    return $this->client->getParsedResponse($request);
   }
 
   /**

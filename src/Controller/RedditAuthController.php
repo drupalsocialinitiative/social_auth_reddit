@@ -76,7 +76,7 @@ class RedditAuthController extends OAuth2ControllerBase {
     if ($profile !== NULL) {
 
       // Gets (or not) extra initial data.
-      $data = $this->userAuthenticator->checkProviderIsAssociated($profile['id']) ? FALSE : $this->providerManager->getExtraDetails();
+      $data = $this->userAuthenticator->checkProviderIsAssociated($profile['id']) ? NULL : $this->providerManager->getExtraDetails();
 
       // If user information could be retrieved.
       return $this->userAuthenticator->authenticateUser($profile['name'], '', $profile['id'], $this->providerManager->getAccessToken(), $profile['icon_img'], $data);
