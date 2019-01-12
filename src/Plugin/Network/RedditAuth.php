@@ -5,18 +5,18 @@ namespace Drupal\social_auth_reddit\Plugin\Network;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Routing\RequestContext;
+use Drupal\Core\Site\Settings;
+use Drupal\Core\Url;
 use Drupal\social_api\Plugin\NetworkBase;
 use Drupal\social_api\SocialApiException;
 use Drupal\social_auth_reddit\Settings\RedditAuthSettings;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Rudolf\OAuth2\Client\Provider\Reddit;
-use Drupal\Core\Site\Settings;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a Network Plugin for Social Auth Reddit.
  *
- * @package Drupal\simple_auth_reddit\Plugin\Network
+ * @package Drupal\social_auth_reddit\Plugin\Network
  *
  * @Network(
  *   id = "social_auth_reddit",
@@ -31,30 +31,20 @@ use Drupal\Core\Site\Settings;
  * )
  */
 class RedditAuth extends NetworkBase implements RedditAuthInterface {
+
   /**
    * The logger factory.
    *
    * @var \Drupal\Core\Logger\LoggerChannelFactory
    */
   protected $loggerFactory;
-  /**
-   * The request context object.
-   *
-   * @var \Drupal\Core\Routing\RequestContext
-   */
-  protected $requestContext;
+
   /**
    * The site settings.
    *
    * @var \Drupal\Core\Site\Settings
    */
   protected $siteSettings;
-  /**
-   * The data point to be collected.
-   *
-   * @var string
-   */
-  protected $scopes;
 
   /**
    * {@inheritdoc}
@@ -67,7 +57,6 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
       $container->get('entity_type.manager'),
       $container->get('config.factory'),
       $container->get('logger.factory'),
-      $container->get('router.request_context'),
       $container->get('settings')
     );
   }
@@ -87,10 +76,8 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
    *   The configuration factory object.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory.
-   * @param \Drupal\Core\Routing\RequestContext $requestContext
-   *   The Request Context Object.
    * @param \Drupal\Core\Site\Settings $settings
-   *   The settings factory.
+   *   The site settings.
    */
   public function __construct(array $configuration,
                               $plugin_id,
@@ -98,19 +85,17 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
                               EntityTypeManagerInterface $entity_type_manager,
                               ConfigFactoryInterface $config_factory,
                               LoggerChannelFactoryInterface $logger_factory,
-                              RequestContext $requestContext,
-                              Settings $settings
-  ) {
+                              Settings $settings) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $config_factory);
+
     $this->loggerFactory = $logger_factory;
-    $this->requestContext = $requestContext;
     $this->siteSettings = $settings;
   }
 
   /**
    * Sets the underlying SDK library.
    *
-   * @return \Rudolf\OAuth2\Client\Provider\Reddit
+   * @return \Rudolf\OAuth2\Client\Provider\Reddit|false
    *   The initialized 3rd party library instance.
    *
    * @throws SocialApiException
@@ -121,43 +106,28 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
     if (!class_exists($class_name)) {
       throw new SocialApiException(sprintf('The Reddit Library for the League OAuth not found. Class: %s.', $class_name));
     }
+
     /* @var \Drupal\social_auth_reddit\Settings\RedditAuthSettings $settings */
     $settings = $this->settings;
+
     if ($this->validateConfig($settings)) {
       // All these settings are mandatory.
-      $provider_settings = [
+      $league_settings = [
         'clientId' => $settings->getClientId(),
         'clientSecret' => $settings->getClientSecret(),
-        'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/reddit/callback',
-        'accessType' => 'offline',
-        'verify' => FALSE,
+        'redirectUri' => Url::fromRoute('social_auth_reddit.callback')->setAbsolute()->toString(),
         'userAgent' => $settings->getUserAgentString(),
       ];
 
       // Proxy configuration data for outward proxy.
-      $proxyUrl = $this->siteSettings->get("http_client_config")["proxy"]["http"];
+      $proxyUrl = $this->siteSettings->get('http_client_config')['proxy']['http'];
       if ($proxyUrl) {
-        $provider_settings = [
-          'proxy' => $proxyUrl,
-        ];
+        $league_settings['proxy'] = $proxyUrl;
       }
 
-      // Add default scopes.
-      $scopes = [
-        'identity',
-        'read',
-      ];
-
-      // If user has requested additional scopes, add them as well.
-      $reddit_scopes = explode(PHP_EOL, $settings->getScopes());
-      foreach ($reddit_scopes as $scope) {
-        array_push($scopes, $scope);
-      }
-
-      $provider_settings['scopes'] = $scopes;
-
-      return new Reddit($provider_settings);
+      return new Reddit($league_settings);
     }
+
     return FALSE;
   }
 
@@ -174,12 +144,14 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
   protected function validateConfig(RedditAuthSettings $settings) {
     $client_id = $settings->getClientId();
     $client_secret = $settings->getClientSecret();
-    if (!$client_id || !$client_secret) {
+    $user_agent = $settings->getUserAgentString();
+    if (!$client_id || !$client_secret || !$user_agent) {
       $this->loggerFactory
         ->get('social_auth_reddit')
-        ->error('Define Client ID and Client Secret on module settings.');
+        ->error('Define Client ID, Client Secret, and User Agent on module settings.');
       return FALSE;
     }
+
     return TRUE;
   }
 

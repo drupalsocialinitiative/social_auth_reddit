@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Path\PathValidatorInterface;
 use Drupal\Core\Routing\RequestContext;
 use Drupal\Core\Routing\RouteProviderInterface;
+use Drupal\Core\Url;
 use Drupal\social_auth\Form\SocialAuthSettingsForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -111,7 +112,7 @@ class RedditAuthSettingsForm extends SocialAuthSettingsForm {
       '#disabled' => TRUE,
       '#title' => $this->t('Authorized redirect URIs'),
       '#description' => $this->t('Copy this value to <em>Authorized redirect URIs</em> field of your Reddit App settings.'),
-      '#default_value' => $GLOBALS['base_url'] . '/user/login/reddit/callback',
+      '#default_value' => Url::fromRoute('social_auth_reddit.callback')->setAbsolute()->toString(),
     ];
 
     $form['reddit_settings']['advanced'] = [
