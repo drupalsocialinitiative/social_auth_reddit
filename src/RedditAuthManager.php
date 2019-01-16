@@ -6,7 +6,7 @@ use Drupal\social_auth\AuthManager\OAuth2Manager;
 use Drupal\Core\Config\ConfigFactory;
 
 /**
- * Contains all the logic for Reddit login integration.
+ * Contains all the logic for Reddit OAuth2 authentication.
  */
 class RedditAuthManager extends OAuth2Manager {
 

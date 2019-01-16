@@ -35,7 +35,7 @@ INSTALLATION
 ------------
 
  * Run composer to install the dependencies.
-   composer require "drupal/social_auth_reddit:~2.0"
+   composer require "drupal/social_auth_reddit:^2.0"
 
  * Install the dependencies: Social API and Social Auth.
 
@@ -53,7 +53,7 @@ CONFIGURATION
  * Add your Reddit project OAuth information in
    Configuration » User Authentication » Reddit.
 
- * Place a Social Auth Reddit block in Structure » Block Layout.
+ * Place a Social Auth Login block in Structure » Block Layout.
 
  * If you already have a Social Auth Login block in the site, rebuild the cache.
 
@@ -77,7 +77,7 @@ SUPPORT REQUESTS
  * Before posting a support request, carefully read the installation
    instructions provided in module documentation page.
 
- * Before posting a support request, check Recent log entries at
+ * Before posting a support request, check the Recent Log entries at
    admin/reports/dblog
 
  * Once you have done this, you can post a support request at module issue
