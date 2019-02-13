@@ -26,7 +26,6 @@ class SocialAuthRedditSettingsFormTest extends SocialAuthTestBase {
   protected function setUp() {
     $this->module = 'social_auth_reddit';
     $this->provider = 'reddit';
-    $this->moduleType = 'social-auth';
 
     parent::setUp();
   }
@@ -57,6 +56,7 @@ class SocialAuthRedditSettingsFormTest extends SocialAuthTestBase {
     $this->edit = [
       'client_id' => $this->randomString(10),
       'client_secret' => $this->randomString(10),
+      'user_agent_string' => $this->randomString(10),
     ];
 
     $this->checkSettingsFormSubmission();
