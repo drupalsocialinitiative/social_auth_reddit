@@ -11,7 +11,8 @@
         "source": "http://cgit.drupalcode.org/social_auth_reddit"
     },
     "require": {
-        "rtheunissen/oauth2-reddit": "^2.0"
+        "rtheunissen/oauth2-reddit": "^2.0",
+        "drupal/social_auth": "^2.0"
     },
     "authors": [
         {
