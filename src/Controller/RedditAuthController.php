@@ -43,9 +43,9 @@ class RedditAuthController extends OAuth2ControllerBase {
                               SocialAuthDataHandler $data_handler,
                               RendererInterface $renderer) {
 
-    parent::__construct('Social Auth Reddit', 'social_auth_reddit',
-                        $messenger, $network_manager, $user_authenticator,
-                        $reddit_manager, $request, $data_handler, $renderer);
+    parent::__construct('Social Auth Reddit', 'social_auth_reddit', $messenger,
+                        $network_manager, $user_authenticator, $reddit_manager,
+                        $request, $data_handler, $renderer);
   }
 
   /**
@@ -69,14 +69,14 @@ class RedditAuthController extends OAuth2ControllerBase {
    * Reddit returns the user here after user has authenticated.
    */
   public function callback() {
-    // Checks if authentication failed.
-    if ($this->request->getCurrentRequest()->query->has('error')) {
-      $this->messenger->addError($this->t('You could not be authenticated.'));
 
-      return $this->redirect('user.login');
+    // Checks if there was an authentication error.
+    $redirect = $this->checkAuthError();
+    if ($redirect) {
+      return $redirect;
     }
 
-    /* @var array|null $profile */
+    /** @var array|null $profile */
     $profile = $this->processCallback();
 
     // If authentication was successful.
@@ -86,7 +86,12 @@ class RedditAuthController extends OAuth2ControllerBase {
       $data = $this->userAuthenticator->checkProviderIsAssociated($profile['id']) ? NULL : $this->providerManager->getExtraDetails();
 
       // If user information could be retrieved.
-      return $this->userAuthenticator->authenticateUser($profile['name'], '', $profile['id'], $this->providerManager->getAccessToken(), $profile['icon_img'], $data);
+      return $this->userAuthenticator->authenticateUser($profile['name'],
+                                                        NULL,
+                                                        $profile['id'],
+                                                        $this->providerManager->getAccessToken(),
+                                                        $profile['icon_img'],
+                                                        $data);
     }
 
     return $this->redirect('user.login');
