@@ -42,7 +42,7 @@ class RedditAuth extends NetworkBase implements RedditAuthInterface {
       throw new SocialApiException(sprintf('The Reddit Library for the League OAuth not found. Class: %s.', $class_name));
     }
 
-    /* @var \Drupal\social_auth_reddit\Settings\RedditAuthSettings $settings */
+    /** @var \Drupal\social_auth_reddit\Settings\RedditAuthSettings $settings */
     $settings = $this->settings;
 
     if ($this->validateConfig($settings)) {
